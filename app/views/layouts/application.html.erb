@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <p>
+  <% if current_user %>
+    Logged in as <%= current_user.user_name %>,
+    <%= link_to 'Sign out', session_url, method: :delete %>
+  <% else %>
+    <%= link_to 'Sign in', new_session_url, action: "GET" %>
+    <%= link_to 'Sign up', new_user_url, action: "GET" %>
+  <% end %>
+  </p>
+
+  <title>NinetyNineCatsDay1</title>
+  <!-- google font -->
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cantarell">
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>
