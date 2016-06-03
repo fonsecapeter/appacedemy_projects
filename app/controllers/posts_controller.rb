@@ -1,3 +1,4 @@
+
 class PostsController < ApplicationController
   def index
     @posts = Post.all
@@ -13,6 +14,7 @@ class PostsController < ApplicationController
   def create
     @subs = Sub.all
     @post = Post.new(post_params)
+    debugger
     if @post.save
       redirect_to post_url(@post)
     else
