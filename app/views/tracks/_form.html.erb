@@ -2,17 +2,19 @@
   <% target = tracks_url %>
   <% verb = 'POST' %>
 <% else %>
-  <% target = edit_tracks_url(@track) %>
+  <% target = track_url(@track) %>
   <% verb = 'PUT' %>
 <% end %>
 
 <%= render 'shared/errors' %>
 
-<form action="<%= target %>" method="<%= verb %>">
+<form action="<%= target %>" method="POST">
+  <input type="hidden" name="_method" value="<%= verb %>">
   <%= auth_token %>
 
   <label for="track_name">name: </label>
-  <input type="text" name="track[name]" id="track_name" />
+  <input type="text" name="track[name]" id="track_name"
+    value="<%= @track.name %>"/>
 
   <br />
 
@@ -28,20 +30,18 @@
   <br />
 
   <input type="radio" name="track[bonus]" id="track_bonus_regular"
-    value="regular" <%= "selected" if @track.bonus == 'regular' %>>
+    value="regular" <%= "checked" if @track.bonus == 'regular' %>>
   <label for="track_bonus_regular">regular track</label>
 
   <input type="radio" name="track[bonus]" id="track_bonus_bonus"
-    value="bonus" <%= "selected" if @track.bonus == 'bonus' %>>
+    value="bonus" <%= "checked" if @track.bonus == 'bonus' %>>
   <label for="track_bonus_bonus">bonus track</label>
 
   <br /><br />
 
   <label for="track_lyrics">lyrics</label>
   <br />
-  <textarea name="track[lyrics]" id="track_lyrics">
-    <%= @track.lyrics %>
-  </textarea>
+  <textarea name="track[lyrics]" id="track_lyrics"><%= @track.lyrics %></textarea>
 
   <br /><br />
 

@@ -1,4 +1,6 @@
 class TracksController < ApplicationController
+  before_action :require_login
+
   def new
     @track = Track.new
     render :new
@@ -6,7 +8,14 @@ class TracksController < ApplicationController
 
   def create
     @track = Track.new
-    stash(Track.new(track_params), :new)
+    track = Track.new(track_params)
+    if track.save
+      redirect_to track_url(track)
+      return
+    else
+      flash.now[:errors] = @track.errors.full_messages
+      render :new
+    end
   end
 
   def edit
@@ -14,8 +23,14 @@ class TracksController < ApplicationController
   end
 
   def update
-    @track = Track.new
-    stash(Track.find(track_params), :edit)
+    @track = Track.find(params[:id])
+    if @track.update(track_params)
+      redirect_to track_url(@track)
+      return
+    else
+      flash.now[:errors] = @track.errors.full_messages
+      render :edit
+    end
   end
 
   def show
@@ -28,17 +43,6 @@ class TracksController < ApplicationController
   end
 
   private
-
-  def stash(track, form)
-    if track.save!
-      redirect_to band_url(track.band)
-      return
-    else
-      flash.now[:errors] = @track.errors.full_messages
-      render form
-      return
-    end
-  end
 
   def track_params
     self.params.require(:track).permit(:name, :bonus, :lyrics, :album_id)

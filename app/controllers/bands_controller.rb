@@ -1,4 +1,6 @@
 class BandsController < ApplicationController
+  before_action :require_login, except: [:index]
+
   def index
     @bands = Band.all
     render :index
@@ -11,7 +13,14 @@ class BandsController < ApplicationController
 
   def create
     @band = Band.new
-    stash(Band.new(band_params), :new)
+    band = Band.new(band_params)
+    if band.save
+      redirect_to band_url(band)
+      return
+    else
+      flash.now[:errors] = @band.errors.full_messages
+      render :new
+    end
   end
 
   def edit
@@ -19,8 +28,14 @@ class BandsController < ApplicationController
   end
 
   def update
-    @band = Band.new
-    stash(Band.find(band_params), :edit)
+    @band = Band.find(params[:id])
+    if @band.update(band_params)
+      redirect_to band_url(@band)
+      return
+    else
+      flash.now[:errors] = @album.errors.full_messages
+      render :edit
+    end
   end
 
   def show
@@ -33,17 +48,6 @@ class BandsController < ApplicationController
   end
 
   private
-
-  def stash(band, form)
-    if band.save
-      redirect_to band_url(band, form)
-      return
-    else
-      flash.now[:errors] = @band.errors.full_messages
-      render form
-      return
-    end
-  end
 
   def band_params
     self.params.require(:band).permit(:name)

@@ -1,4 +1,6 @@
 class AlbumsController < ApplicationController
+  before_action :require_login
+
   def new
     @album = Album.new
     render :new
@@ -6,7 +8,14 @@ class AlbumsController < ApplicationController
 
   def create
     @album = Album.new
-    stash(Album.new(album_params), :new)
+    album = Album.new(album_params)
+    if album.save
+      redirect_to album_url(album)
+      return
+    else
+      flash.now[:errors] = @album.errors.full_messages
+      render :new
+    end
   end
 
   def edit
@@ -14,8 +23,14 @@ class AlbumsController < ApplicationController
   end
 
   def update
-    @album = Album.new
-    stash(Album.find(album_params), :edit)
+    @album = Album.find(params[:id])
+    if @album.update(album_params)
+      redirect_to album_url(@album)
+      return
+    else
+      flash.now[:errors] = @album.errors.full_messages
+      render :edit
+    end
   end
 
   def show
@@ -28,17 +43,6 @@ class AlbumsController < ApplicationController
   end
 
   private
-
-  def stash(album, form)
-    if album.save!
-      redirect_to band_url(album.band_id)
-      return
-    else
-      flash.now[:errors] = @album.errors.full_messages
-      render form
-      return
-    end
-  end
 
   def album_params
     self.params.require(:album).permit(:title, :band_id, :recording)
