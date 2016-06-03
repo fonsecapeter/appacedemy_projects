@@ -1,0 +1,19 @@
+<h1><%= @album.title %></h1>
+<h2><%= link_to @album.band.name, band_url(@album.band) %></h2>
+<br />
+
+<h3>Tracks</h3>
+<% if @album.tracks.empty? %>
+  <p>This album has no tracks yet</p>
+<% else %>
+  <ul>
+    <% @album.tracks.each do |track| %>
+      <li><%= link_to track.name, track_url(track) %></li>
+    <% end %>
+    <li><%= link_to "add track", new_track_url %>
+  </ul>
+<% end %>
+
+<br /><br />
+
+<p><%= link_to "edit #{@album.title}", edit_album_url(@album) %></p>

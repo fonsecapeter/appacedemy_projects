@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MusicApp</title>
+  <!-- google font -->
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Dosis">
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <% if @_controller.class.name != "SessionsController" %>
+    <p>
+      <% if current_user %>
+        <%= "logged in as #{current_user.email}," %>
+        <%= link_to "sign out", session_url, method: 'DELETE' %>
+      <% else %>
+        <%= link_to "sign in", new_session_url %>
+      <% end %>
+    </p>
+  <% end %>
+
+<%= yield %>
+
+</body>
+</html>

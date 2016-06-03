@@ -1,0 +1,22 @@
+<% if action == :new %>
+  <% target = bands_url %>
+  <% verb = 'POST' %>
+<% else %>
+  <% target = edit_band_url(@band) %>
+  <% verb = 'PUT' %>
+<% end %>
+
+<%= render 'shared/errors' %>
+
+<form action="<%= target %>" method="<%= verb %>">
+  <%= auth_token %>
+
+  <label for="band_name">name: </label>
+  <input type="text" name="band[name]" id="band_name" />
+
+  <br /><br />
+
+  <input type=submit />
+  <% link_url = @band.id.nil? ? bands_url : band_url(@band) %>
+  <%= link_to "cancel", link_url %>
+</form>

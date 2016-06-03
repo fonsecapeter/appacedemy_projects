@@ -1,0 +1,11 @@
+<h1><%= @track.name %></h1>
+<h2><%= link_to @track.album.band.name, band_url(@track.album.band) %></h2>
+<h3><%= link_to @track.album.title, album_url(@track.album) %></h3>
+<br />
+
+<h3>Lyrics</h3>
+<p><%= @track.lyrics %></p>
+
+<br /><br />
+
+<p><%= link_to "edit #{@track.name}", edit_track_url(@track) %></p>

@@ -1,0 +1,43 @@
+<% if action == :new %>
+  <% target = albums_url %>
+  <% verb = 'POST' %>
+<% else %>
+  <% target = edit_albums_url(@album) %>
+  <% verb = 'PUT' %>
+<% end %>
+
+<%= render 'shared/errors' %>
+
+<form action="<%= target %>" method="<%= verb %>">
+  <%= auth_token %>
+
+  <label for="album_title">title: </label>
+  <input type="text" name="album[title]" id="album_title" />
+
+  <br />
+
+  <label for="album_band_id">band: </label>
+  <select name="album[band_id]" id="album_band_id">
+    <% Band.all.each do |band| %>
+      <option value="<%= band.id %>" <%= "selected" if @album.band == band.name %>>
+        <%= band.name %>
+      </option>
+    <% end %>
+  </select>
+
+  <br />
+
+  <input type="radio" name="album[recording]" id="album_recording_studio"
+    value="studio" <%= "selected" if @album.recording == 'studio' %>>
+  <label for="album_recording_studio">studio</label>
+
+  <input type="radio" name="album[recording]" id="album_recording_live"
+    value="live" <%= "selected" if @album.recording == 'live' %>>
+  <label for="album_recording_live">live</label>
+
+  <br /><br />
+
+  <input type=submit />
+  <% link_url = @album.id.nil? ? root_url : album_url(@album) %>
+  <%= link_to "cancel", link_url %>
+</form>
