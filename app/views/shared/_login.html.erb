@@ -1,0 +1,24 @@
+
+<% if @_controller.class.name == "SessionsController" %>
+  <% action = session_url %>
+<% else %>
+  <% action = users_url %>
+<% end %>
+
+<%= render 'shared/errors' %>
+
+<form action="<%= action %>" method="POST">
+  <%= auth_token %>
+
+  <label for="user_email">email: </label>
+  <input type="text" name="user[email]" id="user_email" />
+
+  <br />
+
+  <label for="user_password">password: </label>
+  <input type="password" name="user[password]" id="user_password" />
+
+  <br /><br />
+
+  <input type=submit />
+</form>

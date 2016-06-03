@@ -1,0 +1,46 @@
+<h1><%= @post.title %></h1>
+
+<p>
+  <%= "up: #{@post.up_votes.count} down: #{@post.down_votes.count}" %>
+</p>
+
+<table>
+  <tr>
+    <th>
+      Title
+    </th>
+    <th>
+      URL
+    </th>
+    <th>
+      Content
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <%= @post.title %>
+    </td>
+    <td>
+      <%= @post.url %>
+    </td>
+    <td>
+      <%= @post.content %>
+    </td>
+  </tr>
+</table>
+
+<h3>Comments: </h3>
+<ul>
+  <% @post.parent_comments.each do |comment| %>
+    <li>
+      <%= link_to "#{comment.content}", post_comment_url(comment.post, comment) %>
+      <%= child_comments_rec(comment) %>
+    </li>
+  <% end %>
+</ul>
+
+
+<br  />
+
+
+<%= render "comments/form", post: @post, parent: nil %>
