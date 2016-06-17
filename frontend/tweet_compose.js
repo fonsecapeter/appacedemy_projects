@@ -37,8 +37,6 @@ TweatCompose.prototype.submit = function () {
 };
 
 TweatCompose.prototype.handleSuccess = function (newTweet) {
-  console.log(this.$feed);
-  console.log(JSON.stringify(newTweet));
   let $item = $('<li></li>').html(JSON.stringify(newTweet));
   this.$feed.append($item);
 
@@ -60,8 +58,12 @@ TweatCompose.prototype.enableInput = function () {
 
 TweatCompose.prototype.clearInput = function () {
   this.$inputs.each((idx, input) => {
-    $(input).val('');
+    if (input.type !== 'submit') {
+      $(input).val('');
+    }
   });
+
+  this.$mentionedUsersContainer.empty();
 };
 
 // ------------------------------------------------------------------ //
