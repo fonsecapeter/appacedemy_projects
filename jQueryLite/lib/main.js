@@ -65,3 +65,5 @@ window.$l = function(selector) {
     xhr.send(mergedOpts);
   };
 };
+
+module.exports = window.$l;
