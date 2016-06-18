@@ -1,0 +1,2099 @@
+  [1m[36m (137.4ms)[0m  [1mDROP DATABASE IF EXISTS "ajax_twitter_dev"[0m
+  [1m[35m (261.2ms)[0m  CREATE DATABASE "ajax_twitter_dev" ENCODING = 'utf8'
+  [1m[36mSQL (3.0ms)[0m  [1mCREATE EXTENSION IF NOT EXISTS "plpgsql"[0m
+  [1m[35m (17.4ms)[0m  CREATE TABLE "follows" ("id" serial primary key, "followee_id" integer NOT NULL, "follower_id" integer NOT NULL, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (1.7ms)[0m  [1mCREATE UNIQUE INDEX  "index_follows_on_followee_id_and_follower_id" ON "follows" USING btree ("followee_id", "follower_id")[0m
+  [1m[35m (1.3ms)[0m  CREATE  INDEX  "index_follows_on_followee_id" ON "follows" USING btree ("followee_id")
+  [1m[36m (1.4ms)[0m  [1mCREATE  INDEX  "index_follows_on_follower_id" ON "follows" USING btree ("follower_id")[0m
+  [1m[35m (3.7ms)[0m  CREATE TABLE "mentions" ("id" serial primary key, "tweet_id" integer NOT NULL, "user_id" integer NOT NULL, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (1.8ms)[0m  [1mCREATE UNIQUE INDEX  "index_mentions_on_tweet_id_and_user_id" ON "mentions" USING btree ("tweet_id", "user_id")[0m
+  [1m[35m (1.3ms)[0m  CREATE  INDEX  "index_mentions_on_tweet_id" ON "mentions" USING btree ("tweet_id")
+  [1m[36m (1.3ms)[0m  [1mCREATE  INDEX  "index_mentions_on_user_id" ON "mentions" USING btree ("user_id")[0m
+  [1m[35m (4.8ms)[0m  CREATE TABLE "tweets" ("id" serial primary key, "content" text NOT NULL, "user_id" integer NOT NULL, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (1.7ms)[0m  [1mCREATE  INDEX  "index_tweets_on_user_id" ON "tweets" USING btree ("user_id")[0m
+  [1m[35m (5.6ms)[0m  CREATE TABLE "users" ("id" serial primary key, "username" character varying(255) NOT NULL, "password_digest" character varying(255) NOT NULL, "session_token" character varying(255) NOT NULL, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (2.4ms)[0m  [1mCREATE UNIQUE INDEX  "index_users_on_username" ON "users" USING btree ("username")[0m
+  [1m[35m (2.1ms)[0m  CREATE TABLE "schema_migrations" ("version" character varying(255) NOT NULL) 
+  [1m[36m (2.0ms)[0m  [1mCREATE UNIQUE INDEX  "unique_schema_migrations" ON "schema_migrations"  ("version")[0m
+  [1m[35m (0.9ms)[0m  SELECT version FROM "schema_migrations"
+  [1m[36m (1.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140829022442')[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140427221221')
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140829020915')[0m
+  [1m[35m (0.9ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140829021533')
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (8.3ms)[0m  BEGIN
+  [1m[36mUser Exists (1.6ms)[0m  [1mSELECT  1 AS one FROM "users"  WHERE "users"."username" = 'breakfast' LIMIT 1[0m
+  [1m[35mSQL (1.4ms)[0m  INSERT INTO "users" ("created_at", "password_digest", "session_token", "updated_at", "username") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["created_at", "2016-06-18 14:39:33.140928"], ["password_digest", "$2a$10$2758CybOdFIWYm8XdL1mUe/Bx4BDs7oaSqLS/..uSJs6h1sEMLfyi"], ["session_token", "vxh7mC391HQ1gI0e4rd7EQ"], ["updated_at", "2016-06-18 14:39:33.140928"], ["username", "breakfast"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mUser Exists (0.5ms)[0m  [1mSELECT  1 AS one FROM "users"  WHERE "users"."username" = 'earl' LIMIT 1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "users" ("created_at", "password_digest", "session_token", "updated_at", "username") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["created_at", "2016-06-18 14:39:33.225678"], ["password_digest", "$2a$10$EKe6VP.LkVYVksjwTPbFWOzfjMoo3TF3Gj1HCPQ0BM4VstRfv58OO"], ["session_token", "y4XHR4a8r4pd08saf1uD7Q"], ["updated_at", "2016-06-18 14:39:33.225678"], ["username", "earl"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mUser Exists (0.5ms)[0m  [1mSELECT  1 AS one FROM "users"  WHERE "users"."username" = 'curie' LIMIT 1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "users" ("created_at", "password_digest", "session_token", "updated_at", "username") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["created_at", "2016-06-18 14:39:33.308366"], ["password_digest", "$2a$10$F4tKABjIxW.dzE3AEtAzLeA/V9h6OhTClfqbNd2q1kQJtqf6iNa3q"], ["session_token", "WnkFawhHxKsVXK3PIlxcWg"], ["updated_at", "2016-06-18 14:39:33.308366"], ["username", "curie"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mUser Exists (0.4ms)[0m  [1mSELECT  1 AS one FROM "users"  WHERE "users"."username" = 'markov' LIMIT 1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "users" ("created_at", "password_digest", "session_token", "updated_at", "username") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["created_at", "2016-06-18 14:39:33.388868"], ["password_digest", "$2a$10$Pz/WLey21q.LGxLfOjEOn.JtK54AtvKCcp119aK6IVFXvp.TqqDfO"], ["session_token", "qDkQUeoqnopAne011gruKw"], ["updated_at", "2016-06-18 14:39:33.388868"], ["username", "markov"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mUser Exists (0.6ms)[0m  [1mSELECT  1 AS one FROM "users"  WHERE "users"."username" = 'gizmo' LIMIT 1[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO "users" ("created_at", "password_digest", "session_token", "updated_at", "username") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["created_at", "2016-06-18 14:39:33.476079"], ["password_digest", "$2a$10$9v7zbXL.04Tj3Ua04nuja.RshzSSypgVnWSbxH8j5dyqvgNSpHz2a"], ["session_token", "mwx23rracgeoSZzbfW769w"], ["updated_at", "2016-06-18 14:39:33.476079"], ["username", "gizmo"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mUser Exists (0.5ms)[0m  [1mSELECT  1 AS one FROM "users"  WHERE "users"."username" = 'kiki' LIMIT 1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "users" ("created_at", "password_digest", "session_token", "updated_at", "username") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["created_at", "2016-06-18 14:39:33.565867"], ["password_digest", "$2a$10$1jzxdY0r7vgSBeV3kzlq1e60yhZWfbVNJ7co76wFqUWtud4o2MADu"], ["session_token", "_r887aKWhmV2oFxr4Yi1Hg"], ["updated_at", "2016-06-18 14:39:33.565867"], ["username", "kiki"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mUser Exists (0.5ms)[0m  [1mSELECT  1 AS one FROM "users"  WHERE "users"."username" = 'sally' LIMIT 1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "users" ("created_at", "password_digest", "session_token", "updated_at", "username") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["created_at", "2016-06-18 14:39:33.656329"], ["password_digest", "$2a$10$fDZh8Zhc7YLDaYx3dBwqaexu5lsoiC1CblWbJ6uxKGls65lPcPd3W"], ["session_token", "CmiAqD9WU9QjZziSwMLcvA"], ["updated_at", "2016-06-18 14:39:33.656329"], ["username", "sally"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mUser Load (0.7ms)[0m  SELECT "users".* FROM "users"
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2010-03-06 11:20:34.980351"], ["updated_at", "2016-06-18 14:39:33.682532"], ["user_id", 1]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2015-04-10 09:33:36.384855"], ["updated_at", "2016-06-18 14:39:33.687843"], ["user_id", 1]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2014-05-18 16:40:11.252781"], ["updated_at", "2016-06-18 14:39:33.692704"], ["user_id", 1]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2013-11-07 18:49:19.055600"], ["updated_at", "2016-06-18 14:39:33.697766"], ["user_id", 1]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2010-11-09 15:13:30.589326"], ["updated_at", "2016-06-18 14:39:33.702545"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2015-12-05 01:36:36.797253"], ["updated_at", "2016-06-18 14:39:33.706657"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2012-02-05 07:45:54.226631"], ["updated_at", "2016-06-18 14:39:33.710492"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2009-02-24 15:30:42.735110"], ["updated_at", "2016-06-18 14:39:33.714794"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2009-01-08 01:50:56.336140"], ["updated_at", "2016-06-18 14:39:33.718330"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2015-03-17 21:38:58.309126"], ["updated_at", "2016-06-18 14:39:33.721504"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2007-10-23 02:55:01.379814"], ["updated_at", "2016-06-18 14:39:33.724840"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2011-12-03 12:18:42.205364"], ["updated_at", "2016-06-18 14:39:33.728251"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2013-02-19 12:50:41.478395"], ["updated_at", "2016-06-18 14:39:33.731831"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2012-07-25 17:25:45.214903"], ["updated_at", "2016-06-18 14:39:33.735811"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2011-05-09 01:04:51.989389"], ["updated_at", "2016-06-18 14:39:33.739218"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2009-01-26 10:13:55.016326"], ["updated_at", "2016-06-18 14:39:33.742724"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2009-11-08 21:10:51.159166"], ["updated_at", "2016-06-18 14:39:33.746286"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2007-02-11 12:58:14.545657"], ["updated_at", "2016-06-18 14:39:33.750135"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2007-06-16 01:47:57.192289"], ["updated_at", "2016-06-18 14:39:33.754057"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2008-08-30 16:59:09.419265"], ["updated_at", "2016-06-18 14:39:33.758385"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2013-08-29 21:20:09.573996"], ["updated_at", "2016-06-18 14:39:33.762525"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2016-05-09 07:45:50.543386"], ["updated_at", "2016-06-18 14:39:33.766229"], ["user_id", 1]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2016-02-29 04:10:56.021276"], ["updated_at", "2016-06-18 14:39:33.770686"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2014-10-29 07:51:50.540269"], ["updated_at", "2016-06-18 14:39:33.774335"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2008-11-05 05:53:48.531948"], ["updated_at", "2016-06-18 14:39:33.777551"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2006-12-03 21:24:52.134242"], ["updated_at", "2016-06-18 14:39:33.780938"], ["user_id", 1]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2011-11-03 04:28:12.001641"], ["updated_at", "2016-06-18 14:39:33.784354"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2009-12-30 11:20:18.375998"], ["updated_at", "2016-06-18 14:39:33.787970"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2013-06-07 08:25:33.671625"], ["updated_at", "2016-06-18 14:39:33.791791"], ["user_id", 1]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2009-04-25 04:26:23.273754"], ["updated_at", "2016-06-18 14:39:33.796479"], ["user_id", 1]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2013-09-30 01:54:59.854449"], ["updated_at", "2016-06-18 14:39:33.800780"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2007-05-28 07:28:06.175717"], ["updated_at", "2016-06-18 14:39:33.805699"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2012-11-13 21:11:57.929557"], ["updated_at", "2016-06-18 14:39:33.809549"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2012-09-11 13:09:37.258495"], ["updated_at", "2016-06-18 14:39:33.812876"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2010-03-12 15:42:25.627019"], ["updated_at", "2016-06-18 14:39:33.816495"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2013-04-26 09:20:02.382782"], ["updated_at", "2016-06-18 14:39:33.820093"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2015-04-15 22:18:06.419800"], ["updated_at", "2016-06-18 14:39:33.823617"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2006-09-16 14:04:55.293703"], ["updated_at", "2016-06-18 14:39:33.827230"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2009-05-01 07:13:45.662692"], ["updated_at", "2016-06-18 14:39:33.830745"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2010-05-27 02:42:22.481701"], ["updated_at", "2016-06-18 14:39:33.834370"], ["user_id", 1]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2010-09-28 05:07:19.246163"], ["updated_at", "2016-06-18 14:39:33.838228"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (152.0ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2012-08-13 15:12:23.860484"], ["updated_at", "2016-06-18 14:39:33.994561"], ["user_id", 2]]
+  [1m[35m (8.7ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2014-09-05 22:12:25.799400"], ["updated_at", "2016-06-18 14:39:34.007806"], ["user_id", 2]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2015-05-27 00:12:22.408404"], ["updated_at", "2016-06-18 14:39:34.012823"], ["user_id", 2]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2011-01-08 06:35:10.543271"], ["updated_at", "2016-06-18 14:39:34.017363"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2008-02-04 14:11:06.005496"], ["updated_at", "2016-06-18 14:39:34.021264"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2013-02-01 13:22:53.070602"], ["updated_at", "2016-06-18 14:39:34.024989"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2008-07-30 01:28:49.299958"], ["updated_at", "2016-06-18 14:39:34.028632"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2011-02-11 15:10:38.384570"], ["updated_at", "2016-06-18 14:39:34.032049"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2010-12-17 23:57:22.857276"], ["updated_at", "2016-06-18 14:39:34.035731"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2007-02-18 07:04:55.831958"], ["updated_at", "2016-06-18 14:39:34.039159"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2013-04-14 13:43:10.985595"], ["updated_at", "2016-06-18 14:39:34.042854"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2015-02-12 21:11:24.451367"], ["updated_at", "2016-06-18 14:39:34.046499"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2014-06-24 17:52:54.845697"], ["updated_at", "2016-06-18 14:39:34.050350"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2010-01-28 17:04:56.793160"], ["updated_at", "2016-06-18 14:39:34.054168"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2010-11-25 07:23:23.637976"], ["updated_at", "2016-06-18 14:39:34.057713"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2009-04-28 19:03:15.985185"], ["updated_at", "2016-06-18 14:39:34.061228"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2014-05-06 21:28:08.876387"], ["updated_at", "2016-06-18 14:39:34.064712"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2012-05-21 22:25:19.340202"], ["updated_at", "2016-06-18 14:39:34.067905"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2014-05-28 09:56:35.147823"], ["updated_at", "2016-06-18 14:39:34.071376"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2009-04-20 11:23:35.902191"], ["updated_at", "2016-06-18 14:39:34.074692"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2014-05-20 11:26:05.431799"], ["updated_at", "2016-06-18 14:39:34.078344"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2013-10-02 03:34:40.330605"], ["updated_at", "2016-06-18 14:39:34.082157"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2006-06-23 05:12:55.648070"], ["updated_at", "2016-06-18 14:39:34.085590"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2007-12-21 04:17:23.027527"], ["updated_at", "2016-06-18 14:39:34.089185"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2012-10-06 18:55:26.324792"], ["updated_at", "2016-06-18 14:39:34.092704"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2012-08-04 13:23:29.491963"], ["updated_at", "2016-06-18 14:39:34.096617"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2011-04-18 06:30:19.865040"], ["updated_at", "2016-06-18 14:39:34.100332"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2014-09-24 17:29:14.433482"], ["updated_at", "2016-06-18 14:39:34.103898"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2014-04-05 15:12:28.123997"], ["updated_at", "2016-06-18 14:39:34.107541"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2012-03-04 01:28:46.346939"], ["updated_at", "2016-06-18 14:39:34.111115"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2013-06-24 07:44:29.955639"], ["updated_at", "2016-06-18 14:39:34.114524"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2016-06-04 07:42:44.431822"], ["updated_at", "2016-06-18 14:39:34.117623"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2011-03-05 23:00:41.430473"], ["updated_at", "2016-06-18 14:39:34.121386"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2011-10-22 10:27:05.062298"], ["updated_at", "2016-06-18 14:39:34.125479"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2008-09-12 03:47:08.791502"], ["updated_at", "2016-06-18 14:39:34.129480"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2008-11-30 23:43:37.578422"], ["updated_at", "2016-06-18 14:39:34.133545"], ["user_id", 2]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2011-06-09 09:27:57.400345"], ["updated_at", "2016-06-18 14:39:34.137663"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2015-04-29 21:35:39.171123"], ["updated_at", "2016-06-18 14:39:34.142052"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2014-12-12 07:49:18.780194"], ["updated_at", "2016-06-18 14:39:34.145762"], ["user_id", 2]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2010-10-08 13:24:41.979971"], ["updated_at", "2016-06-18 14:39:34.149373"], ["user_id", 3]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2013-01-05 08:22:36.913977"], ["updated_at", "2016-06-18 14:39:34.152609"], ["user_id", 3]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2012-01-30 13:36:08.250829"], ["updated_at", "2016-06-18 14:39:34.155870"], ["user_id", 3]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2006-09-15 17:08:39.089283"], ["updated_at", "2016-06-18 14:39:34.159321"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2009-12-11 08:35:40.448863"], ["updated_at", "2016-06-18 14:39:34.163113"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2011-07-29 06:49:13.661334"], ["updated_at", "2016-06-18 14:39:34.167438"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2012-11-03 17:40:51.628965"], ["updated_at", "2016-06-18 14:39:34.171584"], ["user_id", 3]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2011-03-19 17:34:57.268224"], ["updated_at", "2016-06-18 14:39:34.176148"], ["user_id", 3]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2010-01-12 17:46:01.485692"], ["updated_at", "2016-06-18 14:39:34.180708"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2012-07-07 23:16:50.174101"], ["updated_at", "2016-06-18 14:39:34.184806"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2007-05-22 03:03:05.696110"], ["updated_at", "2016-06-18 14:39:34.188939"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2014-02-10 13:28:14.374005"], ["updated_at", "2016-06-18 14:39:34.193185"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2007-01-02 19:09:21.228677"], ["updated_at", "2016-06-18 14:39:34.197376"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2010-08-13 01:12:57.049185"], ["updated_at", "2016-06-18 14:39:34.201500"], ["user_id", 3]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2007-02-16 01:35:07.983858"], ["updated_at", "2016-06-18 14:39:34.205745"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2016-02-26 17:31:38.494165"], ["updated_at", "2016-06-18 14:39:34.209828"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2008-01-13 13:05:34.771126"], ["updated_at", "2016-06-18 14:39:34.213892"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2012-02-02 12:45:48.937964"], ["updated_at", "2016-06-18 14:39:34.218142"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2013-12-12 09:12:48.991176"], ["updated_at", "2016-06-18 14:39:34.221697"], ["user_id", 3]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2009-11-20 12:47:40.436095"], ["updated_at", "2016-06-18 14:39:34.224976"], ["user_id", 3]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2011-06-08 15:55:30.177667"], ["updated_at", "2016-06-18 14:39:34.228404"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2008-06-11 05:53:50.108330"], ["updated_at", "2016-06-18 14:39:34.232298"], ["user_id", 3]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2013-11-24 10:18:41.903197"], ["updated_at", "2016-06-18 14:39:34.236301"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2013-04-24 11:41:48.680384"], ["updated_at", "2016-06-18 14:39:34.269881"], ["user_id", 3]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2008-12-22 16:34:26.584077"], ["updated_at", "2016-06-18 14:39:34.274087"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2015-11-15 02:51:25.176183"], ["updated_at", "2016-06-18 14:39:34.279782"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2009-11-23 08:13:08.838347"], ["updated_at", "2016-06-18 14:39:34.283999"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2012-05-11 03:39:48.043549"], ["updated_at", "2016-06-18 14:39:34.288481"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2012-02-13 05:23:39.388837"], ["updated_at", "2016-06-18 14:39:34.292841"], ["user_id", 3]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2008-07-30 23:04:13.325245"], ["updated_at", "2016-06-18 14:39:34.297215"], ["user_id", 3]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2015-01-17 05:59:01.470469"], ["updated_at", "2016-06-18 14:39:34.301796"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2013-03-30 03:24:46.771988"], ["updated_at", "2016-06-18 14:39:34.305827"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2010-01-22 06:03:21.791377"], ["updated_at", "2016-06-18 14:39:34.310191"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2007-07-25 14:57:34.761876"], ["updated_at", "2016-06-18 14:39:34.315022"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2015-05-05 22:58:26.203070"], ["updated_at", "2016-06-18 14:39:34.319178"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2013-11-04 03:58:05.591981"], ["updated_at", "2016-06-18 14:39:34.322749"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2015-01-22 14:36:07.678063"], ["updated_at", "2016-06-18 14:39:34.326068"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2013-11-16 04:15:18.245002"], ["updated_at", "2016-06-18 14:39:34.329726"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2012-05-10 05:44:57.354429"], ["updated_at", "2016-06-18 14:39:34.333386"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 3]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2016-05-21 08:12:33.933252"], ["updated_at", "2016-06-18 14:39:34.337331"], ["user_id", 3]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2016-03-10 13:14:57.252687"], ["updated_at", "2016-06-18 14:39:34.341409"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2014-11-08 02:10:14.999876"], ["updated_at", "2016-06-18 14:39:34.345075"], ["user_id", 4]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2013-10-10 22:50:28.918439"], ["updated_at", "2016-06-18 14:39:34.348590"], ["user_id", 4]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2015-05-06 10:54:01.980409"], ["updated_at", "2016-06-18 14:39:34.352200"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2015-10-31 14:04:40.498593"], ["updated_at", "2016-06-18 14:39:34.355823"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2008-09-19 20:58:03.589556"], ["updated_at", "2016-06-18 14:39:34.359423"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2009-07-12 08:53:17.071687"], ["updated_at", "2016-06-18 14:39:34.362754"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2012-08-12 10:15:07.948105"], ["updated_at", "2016-06-18 14:39:34.366319"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2016-03-04 22:09:07.510162"], ["updated_at", "2016-06-18 14:39:34.370290"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2011-07-29 15:53:46.940974"], ["updated_at", "2016-06-18 14:39:34.374425"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2016-02-29 08:13:01.528463"], ["updated_at", "2016-06-18 14:39:34.378598"], ["user_id", 4]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2013-09-07 12:05:38.190953"], ["updated_at", "2016-06-18 14:39:34.383010"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2007-04-09 19:36:55.395503"], ["updated_at", "2016-06-18 14:39:34.387295"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2015-04-29 09:49:57.516660"], ["updated_at", "2016-06-18 14:39:34.391533"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2016-03-22 06:59:55.064544"], ["updated_at", "2016-06-18 14:39:34.395659"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2009-01-26 12:51:18.086674"], ["updated_at", "2016-06-18 14:39:34.399666"], ["user_id", 4]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2008-06-04 11:30:27.074060"], ["updated_at", "2016-06-18 14:39:34.403763"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2007-01-24 03:01:28.574431"], ["updated_at", "2016-06-18 14:39:34.407951"], ["user_id", 4]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2009-05-11 00:50:20.481083"], ["updated_at", "2016-06-18 14:39:34.412137"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2006-11-13 18:29:42.338834"], ["updated_at", "2016-06-18 14:39:34.415829"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2013-09-29 04:07:47.223592"], ["updated_at", "2016-06-18 14:39:34.419865"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2006-11-09 07:54:45.812545"], ["updated_at", "2016-06-18 14:39:34.424248"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2011-05-06 15:22:06.601189"], ["updated_at", "2016-06-18 14:39:34.428348"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2012-01-14 04:34:46.859341"], ["updated_at", "2016-06-18 14:39:34.432513"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2013-05-15 19:51:05.301854"], ["updated_at", "2016-06-18 14:39:34.436600"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2015-04-15 18:28:53.148537"], ["updated_at", "2016-06-18 14:39:34.440801"], ["user_id", 4]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2012-01-08 09:56:33.285689"], ["updated_at", "2016-06-18 14:39:34.445365"], ["user_id", 4]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2013-08-07 20:39:27.517732"], ["updated_at", "2016-06-18 14:39:34.449815"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2016-01-22 01:54:37.144952"], ["updated_at", "2016-06-18 14:39:34.453479"], ["user_id", 4]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2008-08-15 01:06:38.816611"], ["updated_at", "2016-06-18 14:39:34.457298"], ["user_id", 4]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2014-12-20 15:17:11.300769"], ["updated_at", "2016-06-18 14:39:34.461857"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2007-12-06 17:58:37.988105"], ["updated_at", "2016-06-18 14:39:34.465541"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2007-10-24 03:12:10.150747"], ["updated_at", "2016-06-18 14:39:34.468836"], ["user_id", 4]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2013-06-04 14:49:41.144963"], ["updated_at", "2016-06-18 14:39:34.472209"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2010-07-03 13:06:44.295991"], ["updated_at", "2016-06-18 14:39:34.475864"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2015-01-25 04:32:03.216268"], ["updated_at", "2016-06-18 14:39:34.479503"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2007-02-26 12:34:14.777554"], ["updated_at", "2016-06-18 14:39:34.483639"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2011-07-03 00:30:42.739325"], ["updated_at", "2016-06-18 14:39:34.487922"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2016-01-18 02:42:41.898522"], ["updated_at", "2016-06-18 14:39:34.491733"], ["user_id", 4]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 4]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2012-05-30 15:02:06.529722"], ["updated_at", "2016-06-18 14:39:34.495764"], ["user_id", 4]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2014-02-04 02:24:15.476543"], ["updated_at", "2016-06-18 14:39:34.500144"], ["user_id", 5]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2016-02-24 01:11:16.614965"], ["updated_at", "2016-06-18 14:39:34.504626"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2014-08-09 06:47:08.881953"], ["updated_at", "2016-06-18 14:39:34.508836"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2009-04-26 17:05:40.075524"], ["updated_at", "2016-06-18 14:39:34.512515"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2006-07-07 14:30:13.695591"], ["updated_at", "2016-06-18 14:39:34.516041"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2014-04-12 19:26:28.802232"], ["updated_at", "2016-06-18 14:39:34.519910"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2013-10-21 08:34:19.246585"], ["updated_at", "2016-06-18 14:39:34.523586"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2012-08-12 23:53:01.479793"], ["updated_at", "2016-06-18 14:39:34.527195"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2013-06-09 10:50:45.341456"], ["updated_at", "2016-06-18 14:39:34.530494"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2007-12-24 00:03:11.019898"], ["updated_at", "2016-06-18 14:39:34.534078"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2006-08-13 23:31:59.867036"], ["updated_at", "2016-06-18 14:39:34.537875"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2015-05-21 13:27:55.804131"], ["updated_at", "2016-06-18 14:39:34.541661"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2015-12-07 12:46:24.309513"], ["updated_at", "2016-06-18 14:39:34.545640"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2011-10-29 16:22:16.670191"], ["updated_at", "2016-06-18 14:39:34.549661"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2009-11-03 15:30:45.847980"], ["updated_at", "2016-06-18 14:39:34.553620"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2014-03-17 00:20:05.443754"], ["updated_at", "2016-06-18 14:39:34.557636"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2011-02-27 04:24:19.534828"], ["updated_at", "2016-06-18 14:39:34.561535"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2008-08-26 00:06:34.942334"], ["updated_at", "2016-06-18 14:39:34.565616"], ["user_id", 5]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2013-09-30 21:22:31.876959"], ["updated_at", "2016-06-18 14:39:34.570141"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2008-11-09 19:10:39.508624"], ["updated_at", "2016-06-18 14:39:34.574418"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2014-05-27 15:23:29.235059"], ["updated_at", "2016-06-18 14:39:34.578732"], ["user_id", 5]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2013-11-18 09:00:01.033242"], ["updated_at", "2016-06-18 14:39:34.583095"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2009-08-26 10:34:58.042275"], ["updated_at", "2016-06-18 14:39:34.586623"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2013-09-18 21:04:39.658848"], ["updated_at", "2016-06-18 14:39:34.590899"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2016-03-30 09:38:04.970472"], ["updated_at", "2016-06-18 14:39:34.595458"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2009-12-25 05:02:34.133450"], ["updated_at", "2016-06-18 14:39:34.599378"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2008-02-11 07:08:56.349282"], ["updated_at", "2016-06-18 14:39:34.603191"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2006-11-23 18:47:34.774585"], ["updated_at", "2016-06-18 14:39:34.607035"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2008-07-28 05:19:17.596002"], ["updated_at", "2016-06-18 14:39:34.611226"], ["user_id", 5]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2008-05-20 17:44:59.025871"], ["updated_at", "2016-06-18 14:39:34.615555"], ["user_id", 5]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2010-04-07 04:15:23.912159"], ["updated_at", "2016-06-18 14:39:34.619909"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2010-03-14 10:46:03.117706"], ["updated_at", "2016-06-18 14:39:34.624012"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2011-03-27 15:20:52.303933"], ["updated_at", "2016-06-18 14:39:34.627391"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2010-06-06 16:43:37.332441"], ["updated_at", "2016-06-18 14:39:34.630821"], ["user_id", 5]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2009-06-15 21:30:12.617827"], ["updated_at", "2016-06-18 14:39:34.634070"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2010-08-20 22:56:40.970979"], ["updated_at", "2016-06-18 14:39:34.637672"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2008-06-14 22:32:58.526988"], ["updated_at", "2016-06-18 14:39:34.641502"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2007-11-27 04:01:31.191550"], ["updated_at", "2016-06-18 14:39:34.645128"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2006-07-19 05:22:16.771839"], ["updated_at", "2016-06-18 14:39:34.648567"], ["user_id", 5]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 5]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2011-02-26 16:09:37.653080"], ["updated_at", "2016-06-18 14:39:34.652279"], ["user_id", 5]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2015-03-02 13:34:53.153386"], ["updated_at", "2016-06-18 14:39:34.655942"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2007-02-28 23:53:36.337380"], ["updated_at", "2016-06-18 14:39:34.659709"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2016-05-23 09:08:26.691337"], ["updated_at", "2016-06-18 14:39:34.663122"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2013-07-03 18:47:27.945653"], ["updated_at", "2016-06-18 14:39:34.666889"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2010-12-22 04:46:07.248751"], ["updated_at", "2016-06-18 14:39:34.670901"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2016-01-10 12:01:37.021802"], ["updated_at", "2016-06-18 14:39:34.675174"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2013-03-27 07:40:45.824392"], ["updated_at", "2016-06-18 14:39:34.679205"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2014-11-04 17:46:13.339750"], ["updated_at", "2016-06-18 14:39:34.683341"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2016-02-03 05:54:30.110898"], ["updated_at", "2016-06-18 14:39:34.686713"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2011-12-30 20:21:57.363503"], ["updated_at", "2016-06-18 14:39:34.690168"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2011-11-17 16:18:51.167173"], ["updated_at", "2016-06-18 14:39:34.693663"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2012-10-17 10:41:05.775254"], ["updated_at", "2016-06-18 14:39:34.697490"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2011-03-20 21:11:10.784011"], ["updated_at", "2016-06-18 14:39:34.701532"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2012-11-19 19:27:58.300942"], ["updated_at", "2016-06-18 14:39:34.705247"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2012-01-03 10:13:13.817846"], ["updated_at", "2016-06-18 14:39:34.708877"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2015-02-19 05:02:22.751096"], ["updated_at", "2016-06-18 14:39:34.712418"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2012-04-23 15:29:42.172648"], ["updated_at", "2016-06-18 14:39:34.715915"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2007-04-30 21:36:34.858659"], ["updated_at", "2016-06-18 14:39:34.719199"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2010-04-10 23:41:23.467723"], ["updated_at", "2016-06-18 14:39:34.722595"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2012-10-22 03:25:05.674785"], ["updated_at", "2016-06-18 14:39:34.725731"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2011-09-29 03:30:13.093107"], ["updated_at", "2016-06-18 14:39:34.728950"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2011-07-24 16:34:57.156175"], ["updated_at", "2016-06-18 14:39:34.732224"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2011-11-07 21:57:42.544493"], ["updated_at", "2016-06-18 14:39:34.735673"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2014-02-07 09:09:36.053769"], ["updated_at", "2016-06-18 14:39:34.739278"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2010-10-18 11:11:10.215025"], ["updated_at", "2016-06-18 14:39:34.742605"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2010-05-08 16:22:20.838635"], ["updated_at", "2016-06-18 14:39:34.745818"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2013-04-09 00:22:41.051655"], ["updated_at", "2016-06-18 14:39:34.749562"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2015-11-20 21:06:44.423220"], ["updated_at", "2016-06-18 14:39:34.753206"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2012-12-10 19:14:19.199500"], ["updated_at", "2016-06-18 14:39:34.756969"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2007-05-26 18:32:07.849079"], ["updated_at", "2016-06-18 14:39:34.760721"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2013-10-01 18:39:28.285511"], ["updated_at", "2016-06-18 14:39:34.764984"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2007-07-22 04:34:07.018573"], ["updated_at", "2016-06-18 14:39:34.769227"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2011-07-17 03:25:15.575010"], ["updated_at", "2016-06-18 14:39:34.773378"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2008-12-02 11:04:11.070487"], ["updated_at", "2016-06-18 14:39:34.777533"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2009-08-04 01:02:06.562081"], ["updated_at", "2016-06-18 14:39:34.781636"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2014-10-26 22:25:17.553103"], ["updated_at", "2016-06-18 14:39:34.785352"], ["user_id", 6]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2008-01-28 10:16:19.551008"], ["updated_at", "2016-06-18 14:39:34.789210"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2016-01-22 11:41:09.609964"], ["updated_at", "2016-06-18 14:39:34.792878"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2007-06-03 08:44:23.949004"], ["updated_at", "2016-06-18 14:39:34.796618"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 6]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2006-06-25 19:38:59.510872"], ["updated_at", "2016-06-18 14:39:34.800762"], ["user_id", 6]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2008-06-05 20:18:15.812832"], ["updated_at", "2016-06-18 14:39:34.804902"], ["user_id", 7]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2011-02-20 13:44:04.985796"], ["updated_at", "2016-06-18 14:39:34.809274"], ["user_id", 7]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2010-08-14 03:42:57.420126"], ["updated_at", "2016-06-18 14:39:34.813795"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2009-05-23 06:27:51.512065"], ["updated_at", "2016-06-18 14:39:34.817961"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2012-06-26 19:48:54.114583"], ["updated_at", "2016-06-18 14:39:34.821830"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2010-10-26 11:55:48.481803"], ["updated_at", "2016-06-18 14:39:34.825174"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2006-09-28 07:45:29.039525"], ["updated_at", "2016-06-18 14:39:34.828355"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2014-01-02 10:43:47.394969"], ["updated_at", "2016-06-18 14:39:34.831803"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2016-05-28 16:42:50.238105"], ["updated_at", "2016-06-18 14:39:34.835251"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2012-08-27 21:21:38.208430"], ["updated_at", "2016-06-18 14:39:34.838962"], ["user_id", 7]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2013-10-02 12:20:29.535195"], ["updated_at", "2016-06-18 14:39:34.843483"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2009-03-15 11:18:34.439744"], ["updated_at", "2016-06-18 14:39:34.847577"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2010-10-05 08:50:23.318679"], ["updated_at", "2016-06-18 14:39:34.851251"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2011-05-17 11:22:26.876080"], ["updated_at", "2016-06-18 14:39:34.854912"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2010-05-07 05:18:22.926981"], ["updated_at", "2016-06-18 14:39:34.858635"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2014-06-21 20:44:05.045267"], ["updated_at", "2016-06-18 14:39:34.862554"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2014-04-28 02:46:12.142010"], ["updated_at", "2016-06-18 14:39:34.866927"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2014-04-11 03:46:06.469170"], ["updated_at", "2016-06-18 14:39:34.870622"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2008-06-21 20:12:08.411447"], ["updated_at", "2016-06-18 14:39:34.873968"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2010-11-01 17:04:28.837550"], ["updated_at", "2016-06-18 14:39:34.877483"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Scratched a human"], ["created_at", "2009-06-06 22:44:07.632190"], ["updated_at", "2016-06-18 14:39:34.880880"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2016-05-14 04:17:53.489377"], ["updated_at", "2016-06-18 14:39:34.884212"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2008-09-15 16:17:37.247999"], ["updated_at", "2016-06-18 14:39:34.887624"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2006-12-06 10:24:57.349729"], ["updated_at", "2016-06-18 14:39:34.891433"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "xvyadfoiuasdfnasfdn"], ["created_at", "2014-10-02 00:44:24.734585"], ["updated_at", "2016-06-18 14:39:34.895069"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped to the top of the shelf!"], ["created_at", "2007-08-10 19:59:09.742851"], ["updated_at", "2016-06-18 14:39:34.899079"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2013-12-07 14:14:33.183590"], ["updated_at", "2016-06-18 14:39:34.902761"], ["user_id", 7]]
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2008-02-23 14:25:29.650895"], ["updated_at", "2016-06-18 14:39:34.906231"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2009-04-08 23:33:47.670005"], ["updated_at", "2016-06-18 14:39:34.909857"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2010-06-25 18:06:55.642910"], ["updated_at", "2016-06-18 14:39:34.913466"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a long nap"], ["created_at", "2009-12-11 08:04:28.916975"], ["updated_at", "2016-06-18 14:39:34.916753"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Took a photo of a sandwich"], ["created_at", "2009-06-01 23:07:41.868049"], ["updated_at", "2016-06-18 14:39:34.920292"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2006-10-07 22:16:29.458345"], ["updated_at", "2016-06-18 14:39:34.924249"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Set world napping record"], ["created_at", "2009-06-25 15:23:21.309719"], ["updated_at", "2016-06-18 14:39:34.928373"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Ate some tuna"], ["created_at", "2010-07-17 20:36:18.530704"], ["updated_at", "2016-06-18 14:39:34.932399"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Bounced a ball"], ["created_at", "2008-11-11 20:44:44.637943"], ["updated_at", "2016-06-18 14:39:34.936515"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Is that a mouse?"], ["created_at", "2011-02-27 05:05:09.265003"], ["updated_at", "2016-06-18 14:39:34.940663"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Do cats know how to tweet? YES, we do."], ["created_at", "2013-06-24 16:36:01.267110"], ["updated_at", "2016-06-18 14:39:34.944632"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Jumped on some piano keys"], ["created_at", "2014-06-01 21:51:12.571230"], ["updated_at", "2016-06-18 14:39:34.948739"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 7]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "tweets" ("content", "created_at", "updated_at", "user_id") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["content", "Chased a string"], ["created_at", "2009-02-14 09:06:49.398129"], ["updated_at", "2016-06-18 14:39:34.952857"], ["user_id", 7]]
+  [1m[35m (0.5ms)[0m  COMMIT
+
+
+Started GET "/" for 127.0.0.1 at 2016-06-18 07:39:44 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+
+
+Started GET "/feed" for 127.0.0.1 at 2016-06-18 07:39:45 -0700
+Processing by FeedsController#show as HTML
+Redirected to http://localhost:3000/session/new
+Filter chain halted as :require_logged_in! rendered or redirected
+Completed 302 Found in 14ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/session/new" for 127.0.0.1 at 2016-06-18 07:39:45 -0700
+Processing by SessionsController#new as HTML
+  Rendered sessions/new.html.erb within layouts/application (1.4ms)
+Completed 500 Internal Server Error in 229ms
+
+Sprockets::FileNotFound - couldn't find file 'bundle.js' with type 'application/javascript':
+  sprockets (3.6.0) lib/sprockets/directive_processor.rb:182:in `rescue in block in process_directives'
+  sprockets (3.6.0) lib/sprockets/directive_processor.rb:179:in `block in process_directives'
+  sprockets (3.6.0) lib/sprockets/directive_processor.rb:178:in `process_directives'
+  sprockets (3.6.0) lib/sprockets/directive_processor.rb:83:in `_call'
+  sprockets (3.6.0) lib/sprockets/directive_processor.rb:68:in `call'
+  sprockets (3.6.0) lib/sprockets/processor_utils.rb:75:in `call_processor'
+  sprockets (3.6.0) lib/sprockets/processor_utils.rb:57:in `block in call_processors'
+  sprockets (3.6.0) lib/sprockets/processor_utils.rb:56:in `call_processors'
+  sprockets (3.6.0) lib/sprockets/loader.rb:134:in `load_from_unloaded'
+  sprockets (3.6.0) lib/sprockets/loader.rb:60:in `block in load'
+  sprockets (3.6.0) lib/sprockets/loader.rb:317:in `fetch_asset_from_dependency_cache'
+  sprockets (3.6.0) lib/sprockets/loader.rb:44:in `load'
+  sprockets (3.6.0) lib/sprockets/cached_environment.rb:20:in `block in initialize'
+  sprockets (3.6.0) lib/sprockets/cached_environment.rb:47:in `load'
+  sprockets (3.6.0) lib/sprockets/bundle.rb:23:in `block in call'
+  sprockets (3.6.0) lib/sprockets/utils.rb:183:in `dfs'
+  sprockets (3.6.0) lib/sprockets/bundle.rb:24:in `call'
+  sprockets (3.6.0) lib/sprockets/processor_utils.rb:75:in `call_processor'
+  sprockets (3.6.0) lib/sprockets/processor_utils.rb:57:in `block in call_processors'
+  sprockets (3.6.0) lib/sprockets/processor_utils.rb:56:in `call_processors'
+  sprockets (3.6.0) lib/sprockets/loader.rb:134:in `load_from_unloaded'
+  sprockets (3.6.0) lib/sprockets/loader.rb:60:in `block in load'
+  sprockets (3.6.0) lib/sprockets/loader.rb:317:in `fetch_asset_from_dependency_cache'
+  sprockets (3.6.0) lib/sprockets/loader.rb:44:in `load'
+  sprockets (3.6.0) lib/sprockets/cached_environment.rb:20:in `block in initialize'
+  sprockets (3.6.0) lib/sprockets/cached_environment.rb:47:in `load'
+  sprockets (3.6.0) lib/sprockets/base.rb:66:in `find_asset'
+  sprockets (3.6.0) lib/sprockets/environment.rb:30:in `find_asset'
+  sprockets (3.6.0) lib/sprockets/base.rb:92:in `[]'
+  sprockets-rails (2.3.3) lib/sprockets/rails/helper.rb:230:in `lookup_asset_for_path'
+  sprockets-rails (2.3.3) lib/sprockets/rails/helper.rb:190:in `check_errors_for'
+  sprockets-rails (2.3.3) lib/sprockets/rails/helper.rb:137:in `block in javascript_include_tag'
+  sprockets-rails (2.3.3) lib/sprockets/rails/helper.rb:136:in `javascript_include_tag'
+  app/views/layouts/application.html.erb:36:in `_app_views_layouts_application_html_erb__789867206102099014_70186273867640'
+  actionview (4.1.4) lib/action_view/template.rb:145:in `block in render'
+  activesupport (4.1.4) lib/active_support/notifications.rb:161:in `instrument'
+  actionview (4.1.4) lib/action_view/template.rb:339:in `instrument'
+  actionview (4.1.4) lib/action_view/template.rb:143:in `render'
+  actionview (4.1.4) lib/action_view/renderer/template_renderer.rb:67:in `render_with_layout'
+  actionview (4.1.4) lib/action_view/renderer/template_renderer.rb:53:in `render_template'
+  actionview (4.1.4) lib/action_view/renderer/template_renderer.rb:17:in `render'
+  actionview (4.1.4) lib/action_view/renderer/renderer.rb:42:in `render_template'
+  actionview (4.1.4) lib/action_view/renderer/renderer.rb:23:in `render'
+  actionview (4.1.4) lib/action_view/rendering.rb:99:in `_render_template'
+  actionpack (4.1.4) lib/action_controller/metal/streaming.rb:217:in `_render_template'
+  actionview (4.1.4) lib/action_view/rendering.rb:82:in `render_to_body'
+  actionpack (4.1.4) lib/action_controller/metal/rendering.rb:32:in `render_to_body'
+  actionpack (4.1.4) lib/action_controller/metal/renderers.rb:32:in `render_to_body'
+  actionpack (4.1.4) lib/abstract_controller/rendering.rb:25:in `render'
+  actionpack (4.1.4) lib/action_controller/metal/rendering.rb:16:in `render'
+  actionpack (4.1.4) lib/action_controller/metal/instrumentation.rb:41:in `block (2 levels) in render'
+  activesupport (4.1.4) lib/active_support/core_ext/benchmark.rb:12:in `block in ms'
+  /Users/peterfonseca/.rbenv/versions/2.1.2/lib/ruby/2.1.0/benchmark.rb:294:in `realtime'
+  activesupport (4.1.4) lib/active_support/core_ext/benchmark.rb:12:in `ms'
+  actionpack (4.1.4) lib/action_controller/metal/instrumentation.rb:41:in `block in render'
+  actionpack (4.1.4) lib/action_controller/metal/instrumentation.rb:84:in `cleanup_view_runtime'
+  activerecord (4.1.4) lib/active_record/railties/controller_runtime.rb:25:in `cleanup_view_runtime'
+  actionpack (4.1.4) lib/action_controller/metal/instrumentation.rb:40:in `render'
+  app/controllers/sessions_controller.rb:30:in `new'
+  actionpack (4.1.4) lib/action_controller/metal/implicit_render.rb:4:in `send_action'
+  actionpack (4.1.4) lib/abstract_controller/base.rb:189:in `process_action'
+  actionpack (4.1.4) lib/action_controller/metal/rendering.rb:10:in `process_action'
+  actionpack (4.1.4) lib/abstract_controller/callbacks.rb:20:in `block in process_action'
+  activesupport (4.1.4) lib/active_support/callbacks.rb:113:in `call'
+  activesupport (4.1.4) lib/active_support/callbacks.rb:149:in `block in halting_and_conditional'
+  activesupport (4.1.4) lib/active_support/callbacks.rb:149:in `block in halting_and_conditional'
+  activesupport (4.1.4) lib/active_support/callbacks.rb:229:in `block in halting'
+  activesupport (4.1.4) lib/active_support/callbacks.rb:166:in `block in halting'
+  activesupport (4.1.4) lib/active_support/callbacks.rb:86:in `run_callbacks'
+  actionpack (4.1.4) lib/abstract_controller/callbacks.rb:19:in `process_action'
+  actionpack (4.1.4) lib/action_controller/metal/rescue.rb:29:in `process_action'
+  actionpack (4.1.4) lib/action_controller/metal/instrumentation.rb:31:in `block in process_action'
+  activesupport (4.1.4) lib/active_support/notifications.rb:159:in `block in instrument'
+  activesupport (4.1.4) lib/active_support/notifications/instrumenter.rb:20:in `instrument'
+  activesupport (4.1.4) lib/active_support/notifications.rb:159:in `instrument'
+  actionpack (4.1.4) lib/action_controller/metal/instrumentation.rb:30:in `process_action'
+  actionpack (4.1.4) lib/action_controller/metal/params_wrapper.rb:250:in `process_action'
+  activerecord (4.1.4) lib/active_record/railties/controller_runtime.rb:18:in `process_action'
+  actionpack (4.1.4) lib/abstract_controller/base.rb:136:in `process'
+  actionview (4.1.4) lib/action_view/rendering.rb:30:in `process'
+  actionpack (4.1.4) lib/action_controller/metal.rb:196:in `dispatch'
+  actionpack (4.1.4) lib/action_controller/metal/rack_delegation.rb:13:in `dispatch'
+  actionpack (4.1.4) lib/action_controller/metal.rb:232:in `block in action'
+  actionpack (4.1.4) lib/action_dispatch/routing/route_set.rb:82:in `dispatch'
+  actionpack (4.1.4) lib/action_dispatch/routing/route_set.rb:50:in `call'
+  actionpack (4.1.4) lib/action_dispatch/journey/router.rb:71:in `block in call'
+  actionpack (4.1.4) lib/action_dispatch/journey/router.rb:59:in `call'
+  actionpack (4.1.4) lib/action_dispatch/routing/route_set.rb:678:in `call'
+  rack (1.5.5) lib/rack/etag.rb:23:in `call'
+  rack (1.5.5) lib/rack/conditionalget.rb:25:in `call'
+  rack (1.5.5) lib/rack/head.rb:11:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/params_parser.rb:27:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/flash.rb:254:in `call'
+  rack (1.5.5) lib/rack/session/abstract/id.rb:225:in `context'
+  rack (1.5.5) lib/rack/session/abstract/id.rb:220:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/cookies.rb:560:in `call'
+  activerecord (4.1.4) lib/active_record/query_cache.rb:36:in `call'
+  activerecord (4.1.4) lib/active_record/connection_adapters/abstract/connection_pool.rb:621:in `call'
+  activerecord (4.1.4) lib/active_record/migration.rb:380:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/callbacks.rb:29:in `block in call'
+  activesupport (4.1.4) lib/active_support/callbacks.rb:82:in `run_callbacks'
+  actionpack (4.1.4) lib/action_dispatch/middleware/callbacks.rb:27:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/reloader.rb:73:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/remote_ip.rb:76:in `call'
+  better_errors (2.1.1) lib/better_errors/middleware.rb:84:in `protected_app_call'
+  better_errors (2.1.1) lib/better_errors/middleware.rb:79:in `better_errors_call'
+  better_errors (2.1.1) lib/better_errors/middleware.rb:57:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/debug_exceptions.rb:17:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.1.4) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.1.4) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.1.4) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.1.4) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.1.4) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.1.4) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.1.4) lib/active_support/cache/strategy/local_cache_middleware.rb:26:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  actionpack (4.1.4) lib/action_dispatch/middleware/static.rb:64:in `call'
+  rack (1.5.5) lib/rack/sendfile.rb:112:in `call'
+  railties (4.1.4) lib/rails/engine.rb:514:in `call'
+  railties (4.1.4) lib/rails/application.rb:144:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  rack (1.5.5) lib/rack/content_length.rb:14:in `call'
+  rack (1.5.5) lib/rack/handler/webrick.rb:60:in `service'
+  /Users/peterfonseca/.rbenv/versions/2.1.2/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/peterfonseca/.rbenv/versions/2.1.2/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/peterfonseca/.rbenv/versions/2.1.2/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+
+Started POST "/__better_errors/2e9b3c8e3ad8db1c/variables" for 127.0.0.1 at 2016-06-18 07:39:45 -0700
+
+
+Started GET "/session/new" for 127.0.0.1 at 2016-06-18 07:40:10 -0700
+Processing by SessionsController#new as HTML
+  Rendered sessions/new.html.erb within layouts/application (0.4ms)
+Completed 200 OK in 165ms (Views: 164.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:40:10 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:10 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:10 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:10 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:10 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:10 -0700
+
+
+Started POST "/session" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+Processing by SessionsController#create as HTML
+  Parameters: {"authenticity_token"=>"GiPqfxc2EHAyp2t69L2Mljxj/vpJOqEAvBQ5HRxQlI0=", "user"=>{"username"=>"breakfast", "password"=>"[FILTERED]"}}
+  [1m[35mUser Load (1.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."username" = 'breakfast' LIMIT 1
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mUser Exists (0.9ms)[0m  SELECT  1 AS one FROM "users"  WHERE ("users"."username" = 'breakfast' AND "users"."id" != 1) LIMIT 1
+  [1m[36mSQL (0.6ms)[0m  [1mUPDATE "users" SET "session_token" = $1, "updated_at" = $2 WHERE "users"."id" = 1[0m  [["session_token", "2G_UGcDPNYI6UwQq6lzTKA"], ["updated_at", "2016-06-18 14:40:27.710009"]]
+  [1m[35m (8.7ms)[0m  COMMIT
+Redirected to http://localhost:3000/feed
+Completed 302 Found in 180ms (ActiveRecord: 15.5ms)
+
+
+Started GET "/feed" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+Processing by FeedsController#show as HTML
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mSQL (3.2ms)[0m  SELECT  DISTINCT "tweets"."id" AS t0_r0, "tweets"."content" AS t0_r1, "tweets"."user_id" AS t0_r2, "tweets"."created_at" AS t0_r3, "tweets"."updated_at" AS t0_r4, "users"."id" AS t1_r0, "users"."username" AS t1_r1, "users"."password_digest" AS t1_r2, "users"."session_token" AS t1_r3, "users"."created_at" AS t1_r4, "users"."updated_at" AS t1_r5 FROM "tweets" INNER JOIN "users" ON "users"."id" = "tweets"."user_id" LEFT OUTER JOIN follows ON users.id = follows.followee_id WHERE (tweets.user_id = 1 OR follows.follower_id = 1) AND (tweets.created_at > NULL)  ORDER BY tweets.created_at DESC LIMIT 20
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT "users".* FROM "users"[0m
+  Rendered tweets/_form.html.erb (1.8ms)
+  Rendered feeds/show.html.erb within layouts/application (16.9ms)
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+Completed 200 OK in 46ms (Views: 29.7ms | ActiveRecord: 7.3ms)
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:40:27 -0700
+
+
+Started GET "/feed?limit=20" for 127.0.0.1 at 2016-06-18 07:40:36 -0700
+Processing by FeedsController#show as JSON
+  Parameters: {"limit"=>"20"}
+  [1m[36mUser Load (0.5ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mSQL (1.1ms)[0m  [1mSELECT  DISTINCT "tweets"."id" AS t0_r0, "tweets"."content" AS t0_r1, "tweets"."user_id" AS t0_r2, "tweets"."created_at" AS t0_r3, "tweets"."updated_at" AS t0_r4, "users"."id" AS t1_r0, "users"."username" AS t1_r1, "users"."password_digest" AS t1_r2, "users"."session_token" AS t1_r3, "users"."created_at" AS t1_r4, "users"."updated_at" AS t1_r5 FROM "tweets" INNER JOIN "users" ON "users"."id" = "tweets"."user_id" LEFT OUTER JOIN follows ON users.id = follows.followee_id WHERE (tweets.user_id = 1 OR follows.follower_id = 1) AND (tweets.created_at > NULL)  ORDER BY tweets.created_at DESC LIMIT 20[0m
+  Rendered feeds/show.json.jbuilder (13.9ms)
+Completed 200 OK in 19ms (Views: 14.7ms | ActiveRecord: 1.7ms)
+
+
+Started GET "/feed" for 127.0.0.1 at 2016-06-18 07:41:13 -0700
+Processing by FeedsController#show as HTML
+  [1m[35mUser Load (1.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mSQL (1.3ms)[0m  [1mSELECT  DISTINCT "tweets"."id" AS t0_r0, "tweets"."content" AS t0_r1, "tweets"."user_id" AS t0_r2, "tweets"."created_at" AS t0_r3, "tweets"."updated_at" AS t0_r4, "users"."id" AS t1_r0, "users"."username" AS t1_r1, "users"."password_digest" AS t1_r2, "users"."session_token" AS t1_r3, "users"."created_at" AS t1_r4, "users"."updated_at" AS t1_r5 FROM "tweets" INNER JOIN "users" ON "users"."id" = "tweets"."user_id" LEFT OUTER JOIN follows ON users.id = follows.followee_id WHERE (tweets.user_id = 1 OR follows.follower_id = 1) AND (tweets.created_at > NULL)  ORDER BY tweets.created_at DESC LIMIT 20[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT "users".* FROM "users"
+  Rendered tweets/_form.html.erb (1.3ms)
+  Rendered feeds/show.html.erb within layouts/application (5.5ms)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+Completed 200 OK in 54ms (Views: 46.0ms | ActiveRecord: 3.1ms)
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:41:13 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:41:13 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:41:13 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:41:13 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:41:13 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:41:13 -0700
+
+
+Started GET "/feed" for 127.0.0.1 at 2016-06-18 07:46:20 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by FeedsController#show as HTML
+  [1m[35mUser Load (1.3ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mSQL (3.2ms)[0m  [1mSELECT  DISTINCT "tweets"."id" AS t0_r0, "tweets"."content" AS t0_r1, "tweets"."user_id" AS t0_r2, "tweets"."created_at" AS t0_r3, "tweets"."updated_at" AS t0_r4, "users"."id" AS t1_r0, "users"."username" AS t1_r1, "users"."password_digest" AS t1_r2, "users"."session_token" AS t1_r3, "users"."created_at" AS t1_r4, "users"."updated_at" AS t1_r5 FROM "tweets" INNER JOIN "users" ON "users"."id" = "tweets"."user_id" LEFT OUTER JOIN follows ON users.id = follows.followee_id WHERE (tweets.user_id = 1 OR follows.follower_id = 1) AND (tweets.created_at > NULL)  ORDER BY tweets.created_at DESC LIMIT 20[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT "users".* FROM "users"
+  Rendered tweets/_form.html.erb (2.3ms)
+  Rendered feeds/show.html.erb within layouts/application (27.3ms)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+Completed 200 OK in 2157ms (Views: 2109.8ms | ActiveRecord: 12.5ms)
+
+
+Started GET "/assets/bootstrap/affix.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/button.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/alert.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/carousel.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/collapse.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/transition.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/scrollspy.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/tab.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/modal.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap/popover.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/bootstrap-sprockets.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:22 -0700
+
+
+Started GET "/feed" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+Processing by FeedsController#show as HTML
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mSQL (1.2ms)[0m  [1mSELECT  DISTINCT "tweets"."id" AS t0_r0, "tweets"."content" AS t0_r1, "tweets"."user_id" AS t0_r2, "tweets"."created_at" AS t0_r3, "tweets"."updated_at" AS t0_r4, "users"."id" AS t1_r0, "users"."username" AS t1_r1, "users"."password_digest" AS t1_r2, "users"."session_token" AS t1_r3, "users"."created_at" AS t1_r4, "users"."updated_at" AS t1_r5 FROM "tweets" INNER JOIN "users" ON "users"."id" = "tweets"."user_id" LEFT OUTER JOIN follows ON users.id = follows.followee_id WHERE (tweets.user_id = 1 OR follows.follower_id = 1) AND (tweets.created_at > NULL)  ORDER BY tweets.created_at DESC LIMIT 20[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT "users".* FROM "users"
+  Rendered tweets/_form.html.erb (1.3ms)
+  Rendered feeds/show.html.erb within layouts/application (5.2ms)
+  [1m[36mCACHE (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+Completed 200 OK in 78ms (Views: 72.0ms | ActiveRecord: 2.4ms)
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/affix.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/alert.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/button.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/carousel.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/collapse.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/tab.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/transition.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/scrollspy.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/modal.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap/popover.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/bootstrap-sprockets.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:25 -0700
+
+
+Started GET "/feed?limit=20" for 127.0.0.1 at 2016-06-18 07:46:28 -0700
+Processing by FeedsController#show as JSON
+  Parameters: {"limit"=>"20"}
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mSQL (1.3ms)[0m  SELECT  DISTINCT "tweets"."id" AS t0_r0, "tweets"."content" AS t0_r1, "tweets"."user_id" AS t0_r2, "tweets"."created_at" AS t0_r3, "tweets"."updated_at" AS t0_r4, "users"."id" AS t1_r0, "users"."username" AS t1_r1, "users"."password_digest" AS t1_r2, "users"."session_token" AS t1_r3, "users"."created_at" AS t1_r4, "users"."updated_at" AS t1_r5 FROM "tweets" INNER JOIN "users" ON "users"."id" = "tweets"."user_id" LEFT OUTER JOIN follows ON users.id = follows.followee_id WHERE (tweets.user_id = 1 OR follows.follower_id = 1) AND (tweets.created_at > NULL)  ORDER BY tweets.created_at DESC LIMIT 20
+  Rendered feeds/show.json.jbuilder (16.3ms)
+Completed 200 OK in 21ms (Views: 17.1ms | ActiveRecord: 1.9ms)
+
+
+Started GET "/users/search" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+Processing by UsersController#search as HTML
+  Rendered users/search.html.erb within layouts/application (0.6ms)
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+Completed 200 OK in 102ms (Views: 97.8ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/affix.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/alert.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/button.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/carousel.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/collapse.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/tab.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/transition.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/scrollspy.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/modal.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap/popover.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/bootstrap-sprockets.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:39 -0700
+
+
+Started GET "/users/search?query=b" for 127.0.0.1 at 2016-06-18 07:46:40 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"b"}
+  [1m[35mUser Load (5.2ms)[0m  SELECT "users".* FROM "users"  WHERE (username ~ 'b')
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (1.0ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (30.4ms)
+Completed 200 OK in 33ms (Views: 21.9ms | ActiveRecord: 10.1ms)
+
+
+Started GET "/users/search?query=br" for 127.0.0.1 at 2016-06-18 07:46:41 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"br"}
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT "users".* FROM "users"  WHERE (username ~ 'br')[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.4ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1[0m  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.5ms)
+Completed 200 OK in 7ms (Views: 4.7ms | ActiveRecord: 1.5ms)
+
+
+Started GET "/users/search?query=bre" for 127.0.0.1 at 2016-06-18 07:46:41 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"bre"}
+  [1m[35mUser Load (0.7ms)[0m  SELECT "users".* FROM "users"  WHERE (username ~ 'bre')
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.5ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.9ms)
+Completed 200 OK in 8ms (Views: 5.2ms | ActiveRecord: 1.7ms)
+
+
+Started GET "/users/search?query=brea" for 127.0.0.1 at 2016-06-18 07:46:41 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"brea"}
+  [1m[36mUser Load (0.7ms)[0m  [1mSELECT "users".* FROM "users"  WHERE (username ~ 'brea')[0m
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.5ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1[0m  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.9ms)
+Completed 200 OK in 8ms (Views: 5.1ms | ActiveRecord: 1.9ms)
+
+
+Started GET "/users/search?query=break" for 127.0.0.1 at 2016-06-18 07:46:41 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"break"}
+  [1m[35mUser Load (0.7ms)[0m  SELECT "users".* FROM "users"  WHERE (username ~ 'break')
+  [1m[36mUser Load (0.7ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.5ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (5.1ms)
+Completed 200 OK in 8ms (Views: 5.3ms | ActiveRecord: 1.9ms)
+
+
+Started GET "/users/search?query=brea" for 127.0.0.1 at 2016-06-18 07:46:47 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"brea"}
+  [1m[36mUser Load (0.5ms)[0m  [1mSELECT "users".* FROM "users"  WHERE (username ~ 'brea')[0m
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.4ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1[0m  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.0ms)
+Completed 200 OK in 6ms (Views: 4.3ms | ActiveRecord: 1.5ms)
+
+
+Started GET "/users/search?query=bre" for 127.0.0.1 at 2016-06-18 07:46:47 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"bre"}
+  [1m[35mUser Load (0.5ms)[0m  SELECT "users".* FROM "users"  WHERE (username ~ 'bre')
+  [1m[36mUser Load (0.5ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.3ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.0ms)
+Completed 200 OK in 6ms (Views: 4.1ms | ActiveRecord: 1.4ms)
+
+
+Started GET "/users/search?query=br" for 127.0.0.1 at 2016-06-18 07:46:47 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"br"}
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT "users".* FROM "users"  WHERE (username ~ 'br')[0m
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.3ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1[0m  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.2ms)
+Completed 200 OK in 7ms (Views: 4.6ms | ActiveRecord: 1.5ms)
+
+
+Started GET "/users/search?query=b" for 127.0.0.1 at 2016-06-18 07:46:47 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"b"}
+  [1m[35mUser Load (0.6ms)[0m  SELECT "users".* FROM "users"  WHERE (username ~ 'b')
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.3ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.1ms)
+Completed 200 OK in 7ms (Views: 4.7ms | ActiveRecord: 1.4ms)
+
+
+Started GET "/users/search?query=" for 127.0.0.1 at 2016-06-18 07:46:47 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>""}
+  Rendered users/search.json.jbuilder (0.1ms)
+Completed 200 OK in 2ms (Views: 1.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/users/search?query=e" for 127.0.0.1 at 2016-06-18 07:46:48 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"e"}
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT "users".* FROM "users"  WHERE (username ~ 'e')[0m
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.4ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 2 LIMIT 1[0m  [["follower_id", 1]]
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.5ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 3 LIMIT 1[0m  [["follower_id", 1]]
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.4ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1[0m  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (9.9ms)
+Completed 200 OK in 12ms (Views: 9.3ms | ActiveRecord: 2.4ms)
+
+
+Started GET "/users/search?query=ea" for 127.0.0.1 at 2016-06-18 07:46:48 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"ea"}
+  [1m[35mUser Load (0.6ms)[0m  SELECT "users".* FROM "users"  WHERE (username ~ 'ea')
+  [1m[36mUser Load (0.5ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.5ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 2 LIMIT 1  [["follower_id", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.3ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 1 LIMIT 1  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (6.5ms)
+Completed 200 OK in 9ms (Views: 6.3ms | ActiveRecord: 1.9ms)
+
+
+Started GET "/users/search?query=ear" for 127.0.0.1 at 2016-06-18 07:46:49 -0700
+Processing by UsersController#search as JSON
+  Parameters: {"query"=>"ear"}
+  [1m[36mUser Load (0.8ms)[0m  [1mSELECT "users".* FROM "users"  WHERE (username ~ 'ear')[0m
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mFollow Exists (0.5ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 2 LIMIT 1[0m  [["follower_id", 1]]
+  Rendered users/search.json.jbuilder (4.8ms)
+Completed 200 OK in 7ms (Views: 5.0ms | ActiveRecord: 1.9ms)
+
+
+Started GET "/users/2" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+Processing by UsersController#show as HTML
+  Parameters: {"id"=>"2"}
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mTweet Load (0.8ms)[0m  [1mSELECT "tweets".* FROM "tweets"  WHERE "tweets"."user_id" IN (2)[0m
+  [1m[35mMention Load (2.2ms)[0m  SELECT "mentions".* FROM "mentions"  WHERE "mentions"."tweet_id" IN (41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.6ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 2 LIMIT 1  [["follower_id", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 2 LIMIT 1  [["follower_id", 1]]
+  Rendered follows/_form.html.erb (5.7ms)
+  Rendered tweets/_tweet.html.erb (1.2ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.9ms)
+  Rendered tweets/_tweet.html.erb (0.8ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.8ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.8ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.4ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.4ms)
+  Rendered tweets/_tweet.html.erb (0.4ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  [1m[36mUser Load (0.7ms)[0m  [1mSELECT "users".* FROM "users" INNER JOIN "follows" ON "users"."id" = "follows"."follower_id" WHERE "follows"."followee_id" = $1[0m  [["followee_id", 2]]
+  [1m[35mUser Load (0.7ms)[0m  SELECT "users".* FROM "users" INNER JOIN "follows" ON "users"."id" = "follows"."followee_id" WHERE "follows"."follower_id" = $1  [["follower_id", 2]]
+  Rendered users/show.html.erb within layouts/application (64.6ms)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+Completed 200 OK in 242ms (Views: 196.8ms | ActiveRecord: 10.2ms)
+
+
+Started GET "/assets/bootstrap/affix.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/alert.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/button.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/collapse.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/carousel.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/tab.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/transition.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/scrollspy.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/modal.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap/popover.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/bootstrap-sprockets.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:46:51 -0700
+
+
+Started POST "/users/2/follow" for 127.0.0.1 at 2016-06-18 07:47:01 -0700
+Processing by FollowsController#create as JSON
+  Parameters: {"userId"=>"2", "followState"=>"following", "user_id"=>"2"}
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mUser Load (0.5ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1[0m  [["id", 2]]
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 1]]
+  [1m[36mFollow Exists (0.6ms)[0m  [1mSELECT  1 AS one FROM "follows"  WHERE ("follows"."follower_id" = 1 AND "follows"."followee_id" = 2) LIMIT 1[0m
+  [1m[35mSQL (1.2ms)[0m  INSERT INTO "follows" ("created_at", "followee_id", "follower_id", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"  [["created_at", "2016-06-18 14:47:02.996943"], ["followee_id", 2], ["follower_id", 1], ["updated_at", "2016-06-18 14:47:02.996943"]]
+  [1m[36m (8.8ms)[0m  [1mCOMMIT[0m
+Completed 200 OK in 1035ms (Views: 0.6ms | ActiveRecord: 12.6ms)
+
+
+Started GET "/users/2" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+Processing by UsersController#show as HTML
+  Parameters: {"id"=>"2"}
+  [1m[35mUser Load (0.6ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = $1 LIMIT 1  [["id", 2]]
+  [1m[36mTweet Load (1.1ms)[0m  [1mSELECT "tweets".* FROM "tweets"  WHERE "tweets"."user_id" IN (2)[0m
+  [1m[35mMention Load (0.7ms)[0m  SELECT "mentions".* FROM "mentions"  WHERE "mentions"."tweet_id" IN (41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mFollow Exists (0.5ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 2 LIMIT 1  [["follower_id", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  1 AS one FROM "follows"  WHERE "follows"."follower_id" = $1 AND "follows"."followee_id" = 2 LIMIT 1  [["follower_id", 1]]
+  Rendered follows/_form.html.erb (4.6ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.8ms)
+  Rendered tweets/_tweet.html.erb (1.5ms)
+  Rendered tweets/_tweet.html.erb (0.8ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.8ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (0.8ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.5ms)
+  Rendered tweets/_tweet.html.erb (0.4ms)
+  Rendered tweets/_tweet.html.erb (0.7ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (1.0ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  Rendered tweets/_tweet.html.erb (1.2ms)
+  Rendered tweets/_tweet.html.erb (0.6ms)
+  [1m[36mUser Load (1.0ms)[0m  [1mSELECT "users".* FROM "users" INNER JOIN "follows" ON "users"."id" = "follows"."follower_id" WHERE "follows"."followee_id" = $1[0m  [["followee_id", 2]]
+  [1m[35mUser Load (0.6ms)[0m  SELECT "users".* FROM "users" INNER JOIN "follows" ON "users"."id" = "follows"."followee_id" WHERE "follows"."follower_id" = $1  [["follower_id", 2]]
+  Rendered users/show.html.erb within layouts/application (60.8ms)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+Completed 200 OK in 145ms (Views: 126.8ms | ActiveRecord: 5.0ms)
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/affix.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/alert.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/button.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/carousel.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/collapse.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/tab.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/transition.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/scrollspy.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/modal.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap/popover.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/bootstrap-sprockets.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:05 -0700
+
+
+Started GET "/feed" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+Processing by FeedsController#show as HTML
+  [1m[35mUser Load (0.5ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1
+  [1m[36mSQL (1.2ms)[0m  [1mSELECT  DISTINCT "tweets"."id" AS t0_r0, "tweets"."content" AS t0_r1, "tweets"."user_id" AS t0_r2, "tweets"."created_at" AS t0_r3, "tweets"."updated_at" AS t0_r4, "users"."id" AS t1_r0, "users"."username" AS t1_r1, "users"."password_digest" AS t1_r2, "users"."session_token" AS t1_r3, "users"."created_at" AS t1_r4, "users"."updated_at" AS t1_r5 FROM "tweets" INNER JOIN "users" ON "users"."id" = "tweets"."user_id" LEFT OUTER JOIN follows ON users.id = follows.followee_id WHERE (tweets.user_id = 1 OR follows.follower_id = 1) AND (tweets.created_at > NULL)  ORDER BY tweets.created_at DESC LIMIT 20[0m
+  [1m[35mUser Load (0.5ms)[0m  SELECT "users".* FROM "users"
+  Rendered tweets/_form.html.erb (1.6ms)
+  Rendered feeds/show.html.erb within layouts/application (5.2ms)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."session_token" = '2G_UGcDPNYI6UwQq6lzTKA' LIMIT 1[0m
+Completed 200 OK in 118ms (Views: 113.4ms | ActiveRecord: 2.2ms)
+
+
+Started GET "/assets/jquery.serializejson.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/jquery_ujs.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/application.self.css?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/jquery.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/affix.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bundle.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/alert.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/button.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/carousel.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/collapse.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/tab.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/transition.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/scrollspy.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/modal.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap/popover.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/bootstrap-sprockets.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
+
+
+Started GET "/assets/application.self.js?body=1" for 127.0.0.1 at 2016-06-18 07:47:09 -0700
