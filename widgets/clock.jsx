@@ -29,13 +29,13 @@ const Clock = React.createClass({
 
   face () {
     return (
-      <p>{this.state.date.toString()}</p>
+      <p class="clock-face">{this.state.date.toString()}</p>
     );
   },
 
   render () {
     return(
-      <div>
+      <div class="clock">
         {this.face()}
       </div>
     );
