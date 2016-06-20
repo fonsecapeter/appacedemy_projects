@@ -1,9 +1,16 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Tabs = require('./tabs.jsx');
+const Clock = require('./clock.jsx');
 
 const Widgets = React.createClass({
   render() {
+    const clock = () => {
+      return(
+        <Clock></Clock>
+      );
+    };
+
     const initialTabs = [
       {title: 'title0', content: 'content0content0content0content0'},
       {title: 'title1', content: 'content1content1content1content1'},
@@ -13,6 +20,7 @@ const Widgets = React.createClass({
     return(
       <div>
         <Tabs tabData={initialTabs}></Tabs>
+        <Clock></Clock>
       </div>
     );
   }
