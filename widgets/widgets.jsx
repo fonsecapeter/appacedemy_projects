@@ -20,6 +20,7 @@ const Widgets = React.createClass({
     return(
       <div>
         <Tabs tabData={initialTabs}></Tabs>
+        <br />
         <Clock></Clock>
       </div>
     );

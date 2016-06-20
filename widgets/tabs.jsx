@@ -22,9 +22,16 @@ const Tabs = React.createClass({
 
     const tabs = () => {
       return this.props.tabData.map((tab, idx) => {
+        let cls = 'tab';
+        if (idx === this.state.idx) {
+          cls += ' active-tab';
+        }
+
         return (
-          <li key={idx} className="tab">
-            <h1 onClick={this.swapTab.bind(this, idx)}>{tab.title}</h1>
+          <li key={idx}
+              className={cls}
+              onClick={this.swapTab.bind(this, idx)}>
+            <h1>{tab.title}</h1>
           </li>
         );
       });
