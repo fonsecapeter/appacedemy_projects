@@ -32,7 +32,7 @@ Here it is. The ultimate rails/react setup checklist.
     * bundle.js.map
   * first commit
 
-### Git Clone setup
+### Clone Setup
 
 * [ ] `npm install`
 * [ ] `bundle install`
