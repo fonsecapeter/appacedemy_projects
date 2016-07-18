@@ -1,0 +1,29 @@
+<h1><%= @band.name %></h1>
+
+<h3>Albums</h3>
+<% if @band.albums.empty? %>
+  <p>This band has no albums yet</p>
+<% else %>
+  <ul>
+    <% @band.albums.includes(:tracks).each do |album| %>
+      <li>
+        <%= link_to album.title, album_url(album) %>
+        <% unless album.tracks.empty? %>
+          <ul>
+            <% album.tracks.each do |track| %>
+              <li><%= link_to track.name, track_url(track) %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </li>
+    <% end %>
+    <li>
+      <%= link_to "add album", new_album_url %>
+    </li>
+  </ul>
+<% end %>
+
+<br /><br />
+
+<p><%= link_to "edit #{@band.name}", edit_band_url(@band) %></p>
+<p><%= link_to "back to all bands", root_url %></p>

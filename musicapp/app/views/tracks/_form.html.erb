@@ -1,0 +1,51 @@
+<% if action == :new %>
+  <% target = tracks_url %>
+  <% verb = 'POST' %>
+<% else %>
+  <% target = track_url(@track) %>
+  <% verb = 'PUT' %>
+<% end %>
+
+<%= render 'shared/errors' %>
+
+<form action="<%= target %>" method="POST">
+  <input type="hidden" name="_method" value="<%= verb %>">
+  <%= auth_token %>
+
+  <label for="track_name">name: </label>
+  <input type="text" name="track[name]" id="track_name"
+    value="<%= @track.name %>"/>
+
+  <br />
+
+  <label for="track_album_id">album: </label>
+  <select name="track[album_id]" id="track_album_id">
+    <% Album.all.each do |album| %>
+      <option value="<%= album.id %>" <%= "selected" if @track.album_id == album.id %>>
+        <%= album.title %>
+      </option>
+    <% end %>
+  </select>
+
+  <br />
+
+  <input type="radio" name="track[bonus]" id="track_bonus_regular"
+    value="regular" <%= "checked" if @track.bonus == 'regular' %>>
+  <label for="track_bonus_regular">regular track</label>
+
+  <input type="radio" name="track[bonus]" id="track_bonus_bonus"
+    value="bonus" <%= "checked" if @track.bonus == 'bonus' %>>
+  <label for="track_bonus_bonus">bonus track</label>
+
+  <br /><br />
+
+  <label for="track_lyrics">lyrics</label>
+  <br />
+  <textarea name="track[lyrics]" id="track_lyrics"><%= @track.lyrics %></textarea>
+
+  <br /><br />
+
+  <input type=submit />
+  <% link_url = @track.id.nil? ? root_url : track_url(@track) %>
+  <%= link_to "cancel", link_url %>
+</form>
