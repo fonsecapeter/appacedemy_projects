@@ -1,0 +1,10 @@
+.clock {
+  padding: 20px;
+}
+
+.clock-face {
+  background-color: #3f6273;
+  color: #dba470;
+  font-family: monospace;
+  padding: 20px;
+}
