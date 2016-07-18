@@ -1,0 +1,39 @@
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+p, div {
+  margin: inherit;
+  padding: inherit;
+}
+
+#board {
+  display: flex;
+  width: 90px;
+  margin: auto;
+  text-align: center;
+
+}
+
+.tile {
+  background-color :lightgrey;
+  border-style: outset;
+  float: left;
+  height: 20px;
+  padding-left: 20px;
+}
+
+.bomb {
+  background-color: grey;
+  border-style: inset;
+}
+
+.flag {
+  background-color: red;
+  border-style: inset;
+}
+
+h1 {
+  text-align: center;
+}
