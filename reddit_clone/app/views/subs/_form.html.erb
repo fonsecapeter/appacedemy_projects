@@ -1,0 +1,23 @@
+<% if action_name == 'new' %>
+  <% target = "/subs" %>
+  <% method = "POST" %>
+<% else %>
+  <% target = "/subs/#{@sub.id}" %>
+  <% method = "PATCH" %>
+<% end %>
+
+<form action="<%= target %>" method="POST">
+  <input type="hidden" name="_method" value="<%= method %>">
+  <%= auth_token %>
+
+  <label for="sub_title">Title: </label>
+  <input type="text" name="sub[title]" id="sub_title" value="<%= @sub.title %>">
+
+  <br /><br />
+
+  <label for="sub_description">Description: </label><br />
+  <textarea name="sub[description]" id="sub_description"><%= @sub.description %></textarea>
+  <br /><br />
+  <input type="submit" value="Submit!" />
+
+</form>

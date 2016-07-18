@@ -1,0 +1,14 @@
+<h1><%= @comment.content %></h1>
+<p>
+  <%= "up: #{@comment.up_votes.count} down: #{@comment.down_votes.count}" %>
+</p>
+<h3>Child comments: </h3>
+<ul>
+  <% @comment.child_comments.each do |comment| %>
+    <li>
+      <%= link_to "#{comment.content}", post_comment_url(comment.post, comment) %>
+    </li>
+  <% end %>
+</ul>
+
+<%= render "comments/form", post: @comment.post, parent: @comment.id %>
